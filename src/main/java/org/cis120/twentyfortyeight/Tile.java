@@ -1,14 +1,19 @@
 package org.cis120.twentyfortyeight;
 
-public class Tile {
+import javax.swing.*;
+
+public class Tile extends JComponent {
     private int value;
+    private boolean hasCombined;
 
     public Tile() {
         this.value = 0;
+        this.hasCombined = false;
     }
 
     public Tile(int value) {
         this.value = value;
+        this.hasCombined = false;
     }
 
     public int getValue() {
@@ -25,5 +30,13 @@ public class Tile {
         } else {
             return false;
         }
+    }
+
+    public void setHasCombined(boolean b) {
+        hasCombined = b;
+    }
+
+    public boolean getHasCombined() {
+        return hasCombined;
     }
 }

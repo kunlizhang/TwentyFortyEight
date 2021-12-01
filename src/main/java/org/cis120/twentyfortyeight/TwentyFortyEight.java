@@ -1,10 +1,12 @@
 package org.cis120.twentyfortyeight;
 
+import java.util.LinkedList;
 import java.util.Random;
 
 public class TwentyFortyEight {
     private Tile[][] gb;
     private Random rand;
+    private LinkedList<Tile[][]> gbList;
 
     /**
      * Constructor for a GameBoard. Just resets the game.
@@ -18,6 +20,7 @@ public class TwentyFortyEight {
      * Resets the game to start again.
      */
     public void newGame() {
+        this.gbList = new LinkedList<>();
         this.gb = new Tile[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -25,17 +28,16 @@ public class TwentyFortyEight {
             }
         }
         this.spawn();
+        this.spawn();
+        this.gbList.add(this.getGb());
     }
 
     /**
-     * Spawns two random tiles with values of either 2 or 4 on
+     * Spawns a random tile with a value of either 2 or 4 on
      * currently empty tiles.
      */
     public void spawn() {
-        int x0;
-        int y0;
-        int x1;
-        int y1;
+        int x0; int y0;
 
         int t0;
         do {
@@ -44,23 +46,21 @@ public class TwentyFortyEight {
             x0 = t0 % 4;
         } while (!this.gb[x0][y0].isEmpty());
 
-        int t1;
-        do {
-            t1 = rand.nextInt(16);
-            y1 = t1 / 4;
-            x1 = t1 % 4;
-        } while (t0 == t1 || !this.gb[x1][y1].isEmpty());
-
         this.gb[x0][y0].setValue((int) Math.pow(2, (rand.nextInt(2) + 1)));
-        this.gb[x1][y1].setValue((int) Math.pow(2, (rand.nextInt(2) + 1)));
     }
 
     /**
-     * Gets the GameBoard Tile array
-     * @return The GameBoard Tile array
+     * Gets the GameBoard Tile array, and prevents aliasing.
+     * @return The GameBoard Tile[][] array
      */
     public Tile[][] getGb() {
-        return this.gb;
+        Tile[][] temp = new Tile[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                temp[i][j] = new Tile(this.gb[i][j].getValue());
+            }
+        }
+        return temp;
     }
 
     /**
@@ -87,13 +87,18 @@ public class TwentyFortyEight {
      */
     public void horizontalShift(int r, int c, int d) {
         if (c + d >= 0 && c + d < 4) {
-            int t1 = this.gb[r][c].getValue();
-            int t2 = this.gb[r][c + d].getValue();
-            if (t1 == t2 || t2 == 0) {
-                this.gb[r][c + d].setValue(t1 + t2);
+            Tile t1 = this.gb[r][c];
+            Tile t2 = this.gb[r][c + d];
+            if (t1.getValue() == t2.getValue() && t2.getValue() != 0
+                    && !t2.getHasCombined() && !t1.getHasCombined()) {
+                this.gb[r][c + d].setValue(t1.getValue() + t2.getValue());
                 this.gb[r][c].setValue(0);
-                horizontalShift(r, c + d, d);
+                t2.setHasCombined(true);
+            } else if (t2.getValue() == 0) {
+                this.gb[r][c + d].setValue(t1.getValue() + t2.getValue());
+                this.gb[r][c].setValue(0);
             }
+            horizontalShift(r, c + d, d);
         }
     }
 
@@ -106,18 +111,24 @@ public class TwentyFortyEight {
      */
     public void verticalShift(int r, int c, int d) {
         if (r + d >= 0 && r + d < 4) {
-            int t1 = this.gb[r][c].getValue();
-            int t2 = this.gb[r + d][c].getValue();
-            if (t1 == t2 || t2 == 0) {
-                this.gb[r + d][c].setValue(t1 + t2);
+            Tile t1 = this.gb[r][c];
+            Tile t2 = this.gb[r + d][c];
+            if (t1.getValue() == t2.getValue() && t2.getValue() != 0
+                    && !t2.getHasCombined() && !t1.getHasCombined()) {
+                this.gb[r + d][c].setValue(t1.getValue() + t2.getValue());
                 this.gb[r][c].setValue(0);
-                verticalShift(r + d, c, d);
+                t2.setHasCombined(true);
+            } else if (t2.getValue() == 0) {
+                this.gb[r + d][c].setValue(t1.getValue() + t2.getValue());
+                this.gb[r][c].setValue(0);
             }
+            verticalShift(r + d, c, d);
         }
     }
 
     /**
-     * Shifts the entire board left.
+     * Shifts the entire board left by calling onto horizontal shift. Does not
+     * combine tiles that have already been combined.
      */
     public void left() {
         for (int r = 0; r < 4; r++) {
@@ -125,11 +136,16 @@ public class TwentyFortyEight {
                 horizontalShift(r, c, -1);
             }
         }
-        this.spawn();
+        if (canSpawn()) {
+            this.spawn();
+            gbList.add(this.getGb());
+        }
+        resetCombined();
     }
 
     /**
-     * Shifts the entire board right.
+     * Shifts the entire board right by calling onto horizontal shift. Does not
+     * combine tiles that have already been combined.
      */
     public void right() {
         for (int r = 0; r < 4; r++) {
@@ -137,7 +153,11 @@ public class TwentyFortyEight {
                 horizontalShift(r, c, 1);
             }
         }
-        this.spawn();
+        if (canSpawn()) {
+            this.spawn();
+            gbList.add(this.getGb());
+        }
+        resetCombined();
     }
 
     /**
@@ -149,7 +169,11 @@ public class TwentyFortyEight {
                 verticalShift(r, c, -1);
             }
         }
-        this.spawn();
+        if (canSpawn()) {
+            this.spawn();
+            gbList.add(this.getGb());
+        }
+        resetCombined();
     }
 
     /**
@@ -161,12 +185,70 @@ public class TwentyFortyEight {
                 verticalShift(r, c, +1);
             }
         }
-        this.spawn();
+        if (canSpawn()) {
+            this.spawn();
+            gbList.add(this.getGb());
+        }
+        resetCombined();
+    }
+
+    /**
+     * Checks if a given tile is empty.
+     * @param i Row of the tile
+     * @param j Col of the tile
+     * @return  Boolean, true if it is empty
+     */
+    public boolean tileIsEmpty(int i, int j) {
+        return this.gb[i][j].isEmpty();
+    }
+
+    /**
+     * Finds the value of a given cell.
+     * @param i Row of the tile
+     * @param j Col of the tile
+     * @return  The integer value of the tile.
+     */
+    public int tileValue(int i, int j) {
+        return this.gb[i][j].getValue();
+    }
+
+    public void resetCombined() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                this.gb[i][j].setHasCombined(false);
+            }
+        }
+    }
+
+    public boolean canSpawn() {
+        boolean b1 = false;
+        boolean b2 = false;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (!this.gb[i][j].isEmpty()) {
+                    b2 = true;
+                }
+                if (this.gb[i][j].getHasCombined()) {
+                    b1 = true;
+                }
+            }
+        }
+        return b1 && b2;
+    }
+
+    public void undo() {
+        if (this.gbList.size() > 1) {
+            this.gbList.removeLast();
+            this.gb = this.gbList.peekLast();
+        }
+    }
+
+    public boolean checkGameOver() {
+        return true;
     }
 
     /**
      * Returns a string representation of the game board.
-     * @todo implement it so that it shows the last move as well.
      * @return String representing board.
      */
     @Override
