@@ -2,6 +2,7 @@ package org.cis120.twentyfortyeight;
 
 
 import javax.swing.*;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -11,6 +12,8 @@ public class TwentyFortyEight {
     private LinkedList<Tile[][]> gbList;
     private boolean tilesMoved;
     private int score;
+    private final String SAVE_FILE = "files/save.txt";
+    private BufferedReader br;
 
     /**
      * Constructor for a GameBoard. Just resets the game.
@@ -212,6 +215,9 @@ public class TwentyFortyEight {
         return this.gb[i][j].getValue();
     }
 
+    /**
+     * Makes all the tiles not combined (resets their status).
+     */
     public void resetCombined() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -220,6 +226,10 @@ public class TwentyFortyEight {
         }
     }
 
+    /**
+     * Checks whether it is possible to spawn a new tile on the board.
+     * @return True if it is possible to spawn a new tile.
+     */
     public boolean canSpawn() {
         if (!tilesMoved) {
             return false;
@@ -228,6 +238,9 @@ public class TwentyFortyEight {
         return containsEmpty();
     }
 
+    /**
+     * Causes the board to go back one move.
+     */
     public void undo() {
         if (this.gbList.size() > 1) {
             this.gbList.removeLast();
@@ -235,10 +248,19 @@ public class TwentyFortyEight {
         }
     }
 
+    /**
+     * Checks if the board contains an empty tile.
+     * @return true if there is empty tile.
+     */
     public boolean containsEmpty() {
         return containsValue(0);
     }
 
+    /**
+     * Checks if the board contains a tile of a specific value.
+     * @param v The value that we want to check if it is present.
+     * @return  True if there is a tile of that value.
+     */
     public boolean containsValue(int v) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -250,6 +272,10 @@ public class TwentyFortyEight {
         return false;
     }
 
+    /**
+     * Checks if it is possible to make a valid move at that point.
+     * @return True if it is not possible to make a move (game over).
+     */
     public boolean isGameOver() {
         if (containsEmpty()) {
             return false;
@@ -265,6 +291,12 @@ public class TwentyFortyEight {
         return true;
     }
 
+    /**
+     * Checks if it is possible for a tile to combine in the current board state.
+     * @param i The row of the tile
+     * @param j The col of the tile
+     * @return  True if the tile can combine with one of its adjacent tiles.
+     */
     public boolean couldCombine(int i, int j) {
         boolean b1 = false;
         boolean b2 = false;
@@ -283,6 +315,38 @@ public class TwentyFortyEight {
             b4 = gb[i][j].getValue() == gb[i][j + 1].getValue();
         }
         return b1 || b2 || b3 || b4;
+    }
+
+    /**
+     * Reads the save file and sets the current board state to that state.
+     * @throws FileNotFoundException If there is no file at the given path.
+     * @throws IOException           If the file formatting is incorrect.
+     */
+    public void readSaveFile() throws FileNotFoundException, IOException {
+        String currLine;
+        this.br = new BufferedReader(new FileReader(SAVE_FILE));
+        LinkedList<Tile[][]> tempState = new LinkedList<>();
+
+        while ((currLine = br.readLine()) != null) {
+            String[] lineArr = currLine.split(",");
+
+            Tile[][] currTiles = new Tile[4][4];
+
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    try {
+                        currTiles[i][j] = new Tile(Integer.parseInt(lineArr[4*i + j].trim()));
+                    } catch (Exception e) {
+                        System.out.println(4*i + j);
+                        throw new IOException();
+                    }
+                }
+            }
+            tempState.add(currTiles);
+        }
+        this.gbList = new LinkedList<>();
+        this.gbList.addAll(tempState);
+        this.gb = gbList.peekLast();
     }
 
     /**

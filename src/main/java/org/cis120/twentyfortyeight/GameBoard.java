@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -28,7 +29,8 @@ public class GameBoard extends JPanel {
     public static final int BOARD_HEIGHT = 360;
 
     /**
-     * Initializes the game board, and initialises images.
+     * Initializes the game board, and initialises images and action
+     * listeners.
      */
     public GameBoard(JLabel score) {
         // creates border around the court area, JComponent method
@@ -108,7 +110,7 @@ public class GameBoard extends JPanel {
     }
 
     /**
-     * Undo one move.
+     * Undo one move. Calls on the game's undo method.
      */
     public void undo() {
         g.undo();
@@ -118,7 +120,7 @@ public class GameBoard extends JPanel {
     }
 
     /**
-     * Makes a game won popup
+     * Makes a game won popup.
      */
     public void gameWon() {
         JOptionPane.showMessageDialog(null, "You win! Honestly that's kinda nerdy?!? \n" +
@@ -126,20 +128,34 @@ public class GameBoard extends JPanel {
                 );
     }
 
+    /**
+     * Makes a game over popup.
+     */
     public void gameOver() {
         JOptionPane.showMessageDialog(null, "You lost... I'm not mad, just disappointed. \n" +
                 "Your score was: " + g.getScore());
     }
 
     /**
+     * Opens the saved game file, and generates a popup if an error occurs.
+     * Otherwise, sets the game board to the saved state.
+     */
+    public void openSavedGame() {
+        try {
+            g.readSaveFile();
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Bruh you haven't saved a game yet. \n" +
+                    "The program nearly crashed cos of you...");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Bruh your save file is f***ed... \n" +
+                    "The program nearly crashed cos of you...");
+        }
+        repaint();
+        requestFocusInWindow();
+    }
+
+    /**
      * Draws the game board.
-     *
-     * There are many ways to draw a game board. This approach
-     * will not be sufficient for most games, because it is not
-     * modular. All of the logic for drawing the game board is
-     * in this method, and it does not take advantage of helper
-     * methods. Consider breaking up your paintComponent logic
-     * into multiple methods or classes, like Mushroom of Doom.
      */
     @Override
     public void paintComponent(Graphics g) {
