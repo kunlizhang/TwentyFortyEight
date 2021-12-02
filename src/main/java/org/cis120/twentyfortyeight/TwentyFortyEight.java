@@ -1,5 +1,7 @@
 package org.cis120.twentyfortyeight;
 
+
+import javax.swing.*;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -7,6 +9,8 @@ public class TwentyFortyEight {
     private Tile[][] gb;
     private Random rand;
     private LinkedList<Tile[][]> gbList;
+    private boolean tilesMoved;
+    private int score;
 
     /**
      * Constructor for a GameBoard. Just resets the game.
@@ -27,9 +31,11 @@ public class TwentyFortyEight {
                 this.gb[i][j] = new Tile();
             }
         }
+        this.tilesMoved = false;
         this.spawn();
         this.spawn();
         this.gbList.add(this.getGb());
+        this.score = 0;
     }
 
     /**
@@ -64,18 +70,11 @@ public class TwentyFortyEight {
     }
 
     /**
-     * This calculates the total value of the tiles on the board, which
-     * is the current score.
+     * Returns the score of the board.
      * @return int value of the score.
      */
     public int getScore() {
-        int s = 0;
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                s += this.gb[i][j].getValue();
-            }
-        }
-        return s;
+        return score;
     }
 
     /**
@@ -94,9 +93,12 @@ public class TwentyFortyEight {
                 this.gb[r][c + d].setValue(t1.getValue() + t2.getValue());
                 this.gb[r][c].setValue(0);
                 t2.setHasCombined(true);
-            } else if (t2.getValue() == 0) {
+                this.score += t2.getValue();
+                tilesMoved = true;
+            } else if (t1.getValue() != 0 && t2.getValue() == 0) {
                 this.gb[r][c + d].setValue(t1.getValue() + t2.getValue());
                 this.gb[r][c].setValue(0);
+                tilesMoved = true;
             }
             horizontalShift(r, c + d, d);
         }
@@ -118,9 +120,12 @@ public class TwentyFortyEight {
                 this.gb[r + d][c].setValue(t1.getValue() + t2.getValue());
                 this.gb[r][c].setValue(0);
                 t2.setHasCombined(true);
-            } else if (t2.getValue() == 0) {
+                this.score += t2.getValue();
+                tilesMoved = true;
+            } else if (t1.getValue() != 0 && t2.getValue() == 0) {
                 this.gb[r + d][c].setValue(t1.getValue() + t2.getValue());
                 this.gb[r][c].setValue(0);
+                tilesMoved = true;
             }
             verticalShift(r + d, c, d);
         }
@@ -136,11 +141,7 @@ public class TwentyFortyEight {
                 horizontalShift(r, c, -1);
             }
         }
-        if (canSpawn()) {
-            this.spawn();
-            gbList.add(this.getGb());
-        }
-        resetCombined();
+        postMove();
     }
 
     /**
@@ -153,11 +154,7 @@ public class TwentyFortyEight {
                 horizontalShift(r, c, 1);
             }
         }
-        if (canSpawn()) {
-            this.spawn();
-            gbList.add(this.getGb());
-        }
-        resetCombined();
+        postMove();
     }
 
     /**
@@ -169,11 +166,7 @@ public class TwentyFortyEight {
                 verticalShift(r, c, -1);
             }
         }
-        if (canSpawn()) {
-            this.spawn();
-            gbList.add(this.getGb());
-        }
-        resetCombined();
+        postMove();
     }
 
     /**
@@ -185,6 +178,13 @@ public class TwentyFortyEight {
                 verticalShift(r, c, +1);
             }
         }
+        postMove();
+    }
+
+    /**
+     * Methods to be run after a move is executed.
+     */
+    public void postMove() {
         if (canSpawn()) {
             this.spawn();
             gbList.add(this.getGb());
@@ -221,19 +221,11 @@ public class TwentyFortyEight {
     }
 
     public boolean canSpawn() {
-        boolean b1 = false;
-        boolean b2 = false;
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (!this.gb[i][j].isEmpty()) {
-                    b2 = true;
-                }
-                if (this.gb[i][j].getHasCombined()) {
-                    b1 = true;
-                }
-            }
+        if (!tilesMoved) {
+            return false;
         }
-        return b1 && b2;
+        tilesMoved = false;
+        return containsEmpty();
     }
 
     public void undo() {
@@ -243,8 +235,54 @@ public class TwentyFortyEight {
         }
     }
 
-    public boolean checkGameOver() {
+    public boolean containsEmpty() {
+        return containsValue(0);
+    }
+
+    public boolean containsValue(int v) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (this.gb[i][j].getValue() == v) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isGameOver() {
+        if (containsEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (couldCombine(i, j)) {
+                    return false;
+                }
+            }
+        }
+
         return true;
+    }
+
+    public boolean couldCombine(int i, int j) {
+        boolean b1 = false;
+        boolean b2 = false;
+        boolean b3 = false;
+        boolean b4 = false;
+        if (i > 0) {
+            b1 = gb[i][j].getValue() == gb[i - 1][j].getValue();
+        }
+        if (i < 0) {
+            b2 = gb[i][j].getValue() == gb[i + 1][j].getValue();
+        }
+        if (j > 0) {
+            b3 = gb[i][j].getValue() == gb[i][j - 1].getValue();
+        }
+        if (j < 0) {
+            b4 = gb[i][j].getValue() == gb[i][j + 1].getValue();
+        }
+        return b1 || b2 || b3 || b4;
     }
 
     /**
