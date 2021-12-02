@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class TwentyFortyEight {
     private Tile[][] gb;
-    private Random rand;
+    private final Random rand;
     private LinkedList<Tile[][]> gbList;
     private boolean tilesMoved;
     private int score;
@@ -273,13 +273,13 @@ public class TwentyFortyEight {
         if (i > 0) {
             b1 = gb[i][j].getValue() == gb[i - 1][j].getValue();
         }
-        if (i < 0) {
+        if (i < 3) {
             b2 = gb[i][j].getValue() == gb[i + 1][j].getValue();
         }
         if (j > 0) {
             b3 = gb[i][j].getValue() == gb[i][j - 1].getValue();
         }
-        if (j < 0) {
+        if (j < 3) {
             b4 = gb[i][j].getValue() == gb[i][j + 1].getValue();
         }
         return b1 || b2 || b3 || b4;
@@ -294,7 +294,7 @@ public class TwentyFortyEight {
         String s = "";
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                s += String.valueOf(this.gb[i][j].getValue()) + " ";
+                s += this.gb[i][j].getValue() + " ";
             }
             s += "\n";
         }
