@@ -3,8 +3,10 @@ package org.cis120.twentyfortyeight;
 
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.TreeMap;
 
 public class TwentyFortyEight {
     private Tile[][] gb;
@@ -12,8 +14,10 @@ public class TwentyFortyEight {
     private LinkedList<Tile[][]> gbList;
     private boolean tilesMoved;
     private int score;
-    private final String SAVE_FILE = "files/save.txt";
+    private final String saveFile = "files/save.txt";
+    private final String highScoreFile = "files/high.txt";
     private BufferedReader br;
+    private BufferedWriter bw;
 
     /**
      * Constructor for a GameBoard. Just resets the game.
@@ -46,7 +50,8 @@ public class TwentyFortyEight {
      * currently empty tiles.
      */
     public void spawn() {
-        int x0; int y0;
+        int x0;
+        int y0;
 
         int t0;
         do {
@@ -63,10 +68,19 @@ public class TwentyFortyEight {
      * @return The GameBoard Tile[][] array
      */
     public Tile[][] getGb() {
+        return deepCopyGb(this.gb);
+    }
+
+    /**
+     * Creates a deep copy of the given Tile[][] array: must be 4x4.
+     * @param ogb   The input array.
+     * @return      A deep copy of the input array.
+     */
+    public Tile[][] deepCopyGb(Tile[][] ogb) {
         Tile[][] temp = new Tile[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                temp[i][j] = new Tile(this.gb[i][j].getValue());
+                temp[i][j] = new Tile(ogb[i][j].getValue());
             }
         }
         return temp;
@@ -185,12 +199,13 @@ public class TwentyFortyEight {
     }
 
     /**
-     * Methods to be run after a move is executed.
+     * Methods to be run after a move is executed: spawns if possible
+     * and adds state to state list if someting was spawned.
      */
     public void postMove() {
-        if (canSpawn()) {
+        if (this.canSpawn()) {
             this.spawn();
-            gbList.add(this.getGb());
+            this.gbList.add(this.getGb());
         }
         resetCombined();
     }
@@ -244,7 +259,7 @@ public class TwentyFortyEight {
     public void undo() {
         if (this.gbList.size() > 1) {
             this.gbList.removeLast();
-            this.gb = this.gbList.peekLast();
+            this.gb = deepCopyGb(this.gbList.peekLast());
         }
     }
 
@@ -287,7 +302,6 @@ public class TwentyFortyEight {
                 }
             }
         }
-
         return true;
     }
 
@@ -324,8 +338,15 @@ public class TwentyFortyEight {
      */
     public void readSaveFile() throws FileNotFoundException, IOException {
         String currLine;
-        this.br = new BufferedReader(new FileReader(SAVE_FILE));
+        this.br = new BufferedReader(new FileReader(saveFile));
         LinkedList<Tile[][]> tempState = new LinkedList<>();
+
+        currLine = br.readLine();
+        try {
+            this.score = Integer.parseInt(currLine.trim());
+        } catch (Exception e) {
+            throw new IOException();
+        }
 
         while ((currLine = br.readLine()) != null) {
             String[] lineArr = currLine.split(",");
@@ -335,9 +356,8 @@ public class TwentyFortyEight {
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
                     try {
-                        currTiles[i][j] = new Tile(Integer.parseInt(lineArr[4*i + j].trim()));
+                        currTiles[i][j] = new Tile(Integer.parseInt(lineArr[4 * i + j].trim()));
                     } catch (Exception e) {
-                        System.out.println(4*i + j);
                         throw new IOException();
                     }
                 }
@@ -346,7 +366,64 @@ public class TwentyFortyEight {
         }
         this.gbList = new LinkedList<>();
         this.gbList.addAll(tempState);
-        this.gb = gbList.peekLast();
+        this.gb = this.deepCopyGb(tempState.peekLast());
+    }
+
+    /**
+     * Writes the current game state to the save file, along with all the
+     * previous moves. The tiles are stored in a csv format, with 16 values
+     * in each line.
+     *
+     * The first line is current score.
+     *
+     * @throws IOException If the buffered writer is unable to complete the execution.
+     */
+    public void writeSaveFile() throws IOException {
+        File file = Paths.get(saveFile).toFile();
+        this.bw = new BufferedWriter(new FileWriter(file, false));
+
+        bw.write(String.valueOf(this.score));
+        bw.write("\n");
+        for (Tile[][] t : this.gbList) {
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    this.bw.write(t[i][j].getValue() + ",");
+                }
+            }
+            this.bw.write("\n");
+        }
+        this.bw.close();
+    }
+
+    /**
+     * Saves a high score with an associated nickname.
+     * @param nickname      The nickname of the saver.
+     * @throws IOException
+     */
+    public void saveHighScore(String nickname, boolean append) throws IOException {
+        File file = Paths.get(highScoreFile).toFile();
+        this.bw = new BufferedWriter(new FileWriter(file, append));
+        bw.write(nickname + ",");
+        bw.write(String.valueOf(this.score));
+        bw.write("\n");
+        this.bw.close();
+    }
+
+    /**
+     * Reads the high score file.
+     * @return  A TreeMap with nicknames as keys and the score as values.
+     * @throws IOException
+     */
+    public TreeMap<String, Integer> readHighScore() throws IOException {
+        String currLine;
+        TreeMap<String, Integer> scores = new TreeMap<>();
+        this.br = new BufferedReader(new FileReader(highScoreFile));
+
+        while ((currLine = br.readLine()) != null) {
+            String[] lineArr = currLine.split(",");
+            scores.put(lineArr[0], Integer.parseInt(lineArr[1]));
+        }
+        return scores;
     }
 
     /**
@@ -365,7 +442,8 @@ public class TwentyFortyEight {
         return s;
     }
 
-    public static void main(String args[]) {
+
+    public static void main(String[] args) {
         TwentyFortyEight g = new TwentyFortyEight();
         System.out.println(g);
         g.left();

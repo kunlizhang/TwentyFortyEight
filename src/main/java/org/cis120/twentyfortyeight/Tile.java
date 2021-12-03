@@ -14,7 +14,7 @@ public class Tile extends JComponent {
     public Tile(int value) {
         if (value == 2 || value == 4 || value == 8 || value == 16 ||
                 value == 32 || value == 64 || value == 128 || value == 256 ||
-                value == 512 || value == 1024 || value == 2048
+                value == 512 || value == 1024 || value == 2048 || value == 0
         ) {
             this.value = value;
         } else {
@@ -32,11 +32,7 @@ public class Tile extends JComponent {
     }
 
     public boolean isEmpty() {
-        if (this.value == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.value == 0;
     }
 
     public void setHasCombined(boolean b) {

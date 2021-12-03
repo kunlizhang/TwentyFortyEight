@@ -26,14 +26,11 @@ public class RunTwentyFortyEight implements Runnable {
         final GameBoard board = new GameBoard(score);
         frame.add(board, BorderLayout.CENTER);
 
-        // Reset button
+        // Game control panel with buttons
         final JPanel control_panel = new JPanel();
         frame.add(control_panel, BorderLayout.NORTH);
 
-        // Note here that when we add an action listener to the reset button, we
-        // define it as an anonymous inner class that is an instance of
-        // ActionListener with its actionPerformed() method overridden. When the
-        // button is pressed, actionPerformed() will be called.
+        // Reset button
         final JButton reset = new JButton("Reset");
         reset.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -60,7 +57,26 @@ public class RunTwentyFortyEight implements Runnable {
         });
         control_panel.add(open);
 
+        // Save game button
+        final JButton save = new JButton("Save");
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                board.saveGame();
+            }
+        });
+        control_panel.add(save);
+
+        // Show the high score button
+        final JButton scores = new JButton("Scores");
+        scores.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        control_panel.add(scores);
+
         // Put the frame on the screen
+        frame.setResizable(false);
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);

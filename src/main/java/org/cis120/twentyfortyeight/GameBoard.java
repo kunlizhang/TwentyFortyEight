@@ -1,19 +1,13 @@
 package org.cis120.twentyfortyeight;
-
-import org.cis120.twentyfortyeight.TwentyFortyEight;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Objects;
 import java.util.TreeMap;
 
 public class GameBoard extends JPanel {
@@ -40,7 +34,7 @@ public class GameBoard extends JPanel {
         // keyboard focus, key events are handled by its key listener.
         setFocusable(true);
 
-        g = new TwentyFortyEight(); // initializes model for the game
+        this.g = new TwentyFortyEight(); // initializes model for the game
         this.score = score;
         this.score.setText("Current score: ");
         this.imgMap = new TreeMap<>();
@@ -83,15 +77,15 @@ public class GameBoard extends JPanel {
                 } else if (e.getKeyCode() == 39) {
                     g.right();
                 }
-                score.setText("Current score: " + Integer.toString(g.getScore()));
                 repaint();
 
                 if (g.containsValue(2048)) {
                     gameWon();
+                    g.newGame();
                 }
                 if (g.isGameOver()) {
                     gameOver();
-                    reset();
+                    g.newGame();
                 }
             }
         });
@@ -123,17 +117,46 @@ public class GameBoard extends JPanel {
      * Makes a game won popup.
      */
     public void gameWon() {
-        JOptionPane.showMessageDialog(null, "You win! Honestly that's kinda nerdy?!? \n" +
-                "Your score was: " + g.getScore()
+        String nick;
+        nick = JOptionPane.showInputDialog(null, "You win! Honestly that's kinda nerdy?!? \n" +
+                "Your score was " + g.getScore() +
+                "\n Enter your name if you would like to save your score!"
                 );
+        saveScore(nick);
     }
 
     /**
      * Makes a game over popup.
      */
     public void gameOver() {
-        JOptionPane.showMessageDialog(null, "You lost... I'm not mad, just disappointed. \n" +
-                "Your score was: " + g.getScore());
+        String nick;
+        nick = JOptionPane.showInputDialog(null,
+                "You lost... I'm not made, just disappointed. :( \n" +
+                "Your score was " + g.getScore() +
+                "\n Enter your name if you would like to save your score you embarrassment."
+        );
+        saveScore(nick);
+    }
+
+    /**
+     * Saves the current high score with the associated nickname by writing to
+     * the high score file. If the nickname already has an associated score
+     * it adds a number to the end of the nickname.
+     * @param nick  The name to be associated with the score.
+     */
+    public void saveScore(String nick) {
+        if (nick != null && !nick.equals("")) {
+            try {
+                TreeMap<String, Integer> currScores = g.readHighScore();
+                int i = 1;
+                while (currScores.containsKey(nick)) {
+                    nick = nick + i;
+                }
+                g.saveHighScore(nick, true);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Lol it didn't save and idk why");
+            }
+        }
     }
 
     /**
@@ -155,30 +178,36 @@ public class GameBoard extends JPanel {
     }
 
     /**
+     * Saves the game to the save file, and generates a popup if an error occurs.
+     */
+    public void saveGame() {
+        try {
+            g.writeSaveFile();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Hmm. Something went wrong. \n" +
+                    "The program nearly crashed cos of you...");
+        }
+        repaint();
+        requestFocusInWindow();
+    }
+
+    /**
      * Draws the game board.
      */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        int fontSize = 40;
-        Font f = new Font("Comic Sans MS", Font.BOLD, fontSize);
-        g.setFont(f);
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(5));
-        g2.setColor(Color.LIGHT_GRAY);
-
-        g2.drawLine(90, 0, 90, 360);
-        g2.drawLine(180, 0, 180, 360);
-        g2.drawLine(270, 0, 270, 360);
-        g2.drawLine(0, 90, 360, 90);
-        g2.drawLine(0, 180, 360, 180);
-        g2.drawLine(0, 270, 360, 270);
-        g2.setColor(Color.BLACK);
+        score.setText("Current score: " + Integer.toString(this.g.getScore()));
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (!this.g.tileIsEmpty(i, j)) {
                     g.drawImage(imgMap.get(this.g.tileValue(i, j)), j*90, i*90, null);
+                } else {
+                    g.setColor(Color.WHITE);
+                    g.fillRect(j * 90, i * 90, 90, 90);
+                    g.setColor(Color.BLACK);
                 }
+                g.drawRect(j * 90, i * 90, 90, 90);
             }
         }
     }

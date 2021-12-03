@@ -11,8 +11,8 @@ public class Game {
      * include a main method in your final submission.
      */
     public static void main(String[] args) {
-        Runnable game = new org.cis120.twentyfortyeight.RunTwentyFortyEight(); // Set the game you want to run
-                                                                     // here
+        Runnable game = new org.cis120.twentyfortyeight.RunTwentyFortyEight();
+        // Set the game you want to run here
         SwingUtilities.invokeLater(game);
     }
 }
