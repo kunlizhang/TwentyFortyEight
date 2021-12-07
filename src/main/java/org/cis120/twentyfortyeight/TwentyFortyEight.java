@@ -1,6 +1,5 @@
 package org.cis120.twentyfortyeight;
 
-
 import javax.swing.*;
 import java.io.*;
 import java.nio.file.Paths;
@@ -12,6 +11,7 @@ public class TwentyFortyEight {
     private Tile[][] gb;
     private final Random rand;
     private LinkedList<Tile[][]> gbList;
+    private LinkedList<Integer> scoreList;
     private boolean tilesMoved;
     private int score;
     private final String saveFile = "files/save.txt";
@@ -43,6 +43,7 @@ public class TwentyFortyEight {
         this.spawn();
         this.gbList.add(this.getGb());
         this.score = 0;
+        this.scoreList = new LinkedList<>();
     }
 
     /**
@@ -60,7 +61,14 @@ public class TwentyFortyEight {
             x0 = t0 % 4;
         } while (!this.gb[x0][y0].isEmpty());
 
-        this.gb[x0][y0].setValue((int) Math.pow(2, (rand.nextInt(2) + 1)));
+        int r;
+        if (Math.random() < 0.25) {
+            r = 4;
+        } else {
+            r = 2;
+        }
+
+        this.gb[x0][y0].setValue(r);
     }
 
     /**
@@ -69,6 +77,19 @@ public class TwentyFortyEight {
      */
     public Tile[][] getGb() {
         return deepCopyGb(this.gb);
+    }
+
+    /**
+     * Returns a deep copy of the list of game boards stored.
+     * For testing purposes.
+     * @return Linked list of game boards.
+     */
+    public LinkedList<Tile[][]> getGbList() {
+        LinkedList<Tile[][]> temp = new LinkedList<>();
+        for (Tile[][] tArr : this.gbList) {
+            temp.add(deepCopyGb(tArr));
+        }
+        return temp;
     }
 
     /**
@@ -87,11 +108,47 @@ public class TwentyFortyEight {
     }
 
     /**
+     * Restarts the game, and sets the game board to the given values.
+     *
+     * This method is provided for testing purposes.
+     *
+     * @param valueArr An array of the values in the gameboard to start.
+     */
+    public void setGB(Integer[] valueArr) {
+        this.gbList = new LinkedList<>();
+        this.gb = new Tile[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                this.gb[i][j] = new Tile(valueArr[4 * i + j]);
+            }
+        }
+        this.tilesMoved = false;
+        this.gbList.add(this.getGb());
+        this.score = 0;
+    }
+
+    /**
      * Returns the score of the board.
      * @return int value of the score.
      */
     public int getScore() {
-        return score;
+        if (this.scoreList.size() >= 1) {
+            return this.scoreList.peekLast();
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Returns the score list history. This is provided for testing.
+     * @return  LinkedList of the score history.
+     */
+    public LinkedList<Integer> getScoreList() {
+        LinkedList<Integer> temp = new LinkedList<>();
+        for (Integer i : this.scoreList) {
+            temp.add(i);
+        }
+        return temp;
     }
 
     /**
@@ -151,63 +208,119 @@ public class TwentyFortyEight {
     /**
      * Shifts the entire board left by calling onto horizontal shift. Does not
      * combine tiles that have already been combined.
+     * @param spawn Boolean, whether to spawn new tiles,
+     *              false is provided for testing purposes.
      */
-    public void left() {
+    public void left(boolean spawn) {
         for (int r = 0; r < 4; r++) {
             for (int c = 0; c < 4; c++) {
                 horizontalShift(r, c, -1);
             }
         }
-        postMove();
+        if (this.canSpawn()) {
+            this.scoreList.add(score + this.getScore());
+            this.score = 0;
+            this.gbList.add(this.getGb());
+            if (spawn) {
+                this.spawn();
+            }
+        }
+        resetCombined();
+    }
+
+    /**
+     * Executes left with spawning.
+     */
+    public void left() {
+        this.left(true);
     }
 
     /**
      * Shifts the entire board right by calling onto horizontal shift. Does not
      * combine tiles that have already been combined.
+     * @param spawn Boolean, whether to spawn new tile. False is used
+     *              for testing purposes.
      */
-    public void right() {
+    public void right(boolean spawn) {
         for (int r = 0; r < 4; r++) {
             for (int c = 3; c >= 0; c--) {
                 horizontalShift(r, c, 1);
             }
         }
-        postMove();
+        if (this.canSpawn()) {
+            this.scoreList.add(score + this.getScore());
+            this.score = 0;
+            this.gbList.add(this.getGb());
+            if (spawn) {
+                this.spawn();
+            }
+        }
+        resetCombined();
+    }
+
+    /**
+     * Executes right with spawning.
+     */
+    public void right() {
+        this.right(true);
     }
 
     /**
      * Shifts the entire board up.
+     * @param spawn Boolean, whether to spawn new tiles, false is used
+     *              for testing purposes.
      */
-    public void up() {
+    public void up(boolean spawn) {
         for (int c = 0; c < 4; c++) {
             for (int r = 0; r < 4; r++) {
                 verticalShift(r, c, -1);
             }
         }
-        postMove();
+        if (this.canSpawn()) {
+            this.scoreList.add(score + this.getScore());
+            this.score = 0;
+            this.gbList.add(this.getGb());
+            if (spawn) {
+                this.spawn();
+            }
+        }
+        resetCombined();
+    }
+
+    /**
+     * Executes up with spawning.
+     */
+    public void up() {
+        this.up(true);
     }
 
     /**
      * Shifts the entire board down.
+     * @param spawn Boolean, whether to spawn new tiles, false is used
+     *              for testing purposes.
      */
-    public void down() {
+    public void down(boolean spawn) {
         for (int c = 0; c < 4; c++) {
             for (int r = 3; r >= 0; r--) {
                 verticalShift(r, c, +1);
             }
         }
-        postMove();
+        if (this.canSpawn()) {
+            this.scoreList.add(score + this.getScore());
+            this.score = 0;
+            this.gbList.add(this.getGb());
+            if (spawn) {
+                this.spawn();
+            }
+        }
+        resetCombined();
     }
 
     /**
-     * Methods to be run after a move is executed: spawns if possible
-     * and adds state to state list if someting was spawned.
+     * Executes down with spawning.
      */
-    public void postMove() {
-        if (this.canSpawn()) {
-            this.spawn();
-            this.gbList.add(this.getGb());
-        }
-        resetCombined();
+    public void down() {
+        this.down(true);
     }
 
     /**
@@ -254,12 +367,15 @@ public class TwentyFortyEight {
     }
 
     /**
-     * Causes the board to go back one move.
+     * Causes the board to go back one move. Also undoes the score.
      */
     public void undo() {
         if (this.gbList.size() > 1) {
             this.gbList.removeLast();
             this.gb = deepCopyGb(this.gbList.peekLast());
+        }
+        if (this.scoreList.size() > 0) {
+            this.scoreList.removeLast();
         }
     }
 
@@ -343,7 +459,8 @@ public class TwentyFortyEight {
 
         currLine = br.readLine();
         try {
-            this.score = Integer.parseInt(currLine.trim());
+            this.scoreList = new LinkedList<>();
+            this.scoreList.add(Integer.parseInt(currLine.trim()));
         } catch (Exception e) {
             throw new IOException();
         }
@@ -382,7 +499,7 @@ public class TwentyFortyEight {
         File file = Paths.get(saveFile).toFile();
         this.bw = new BufferedWriter(new FileWriter(file, false));
 
-        bw.write(String.valueOf(this.score));
+        bw.write(String.valueOf(this.getScore()));
         bw.write("\n");
         for (Tile[][] t : this.gbList) {
             for (int i = 0; i < 4; i++) {
@@ -398,30 +515,33 @@ public class TwentyFortyEight {
     /**
      * Saves a high score with an associated nickname.
      * @param nickname      The nickname of the saver.
+     * @param score         The score to be saved
+     * @param append        Whether to append to the save document: for testing.
      * @throws IOException
      */
-    public void saveHighScore(String nickname, boolean append) throws IOException {
+    public void saveHighScore(String nickname, Integer score, boolean append) throws IOException {
         File file = Paths.get(highScoreFile).toFile();
         this.bw = new BufferedWriter(new FileWriter(file, append));
-        bw.write(nickname + ",");
-        bw.write(String.valueOf(this.score));
+        bw.write(String.valueOf(score) + ",");
+        bw.write(nickname);
         bw.write("\n");
         this.bw.close();
     }
 
     /**
-     * Reads the high score file.
+     * Reads the high score file. If one score already contains a player,
+     * it only returns the most recent player who attained that score.
      * @return  A TreeMap with nicknames as keys and the score as values.
      * @throws IOException
      */
-    public TreeMap<String, Integer> readHighScore() throws IOException {
+    public TreeMap<Integer, String> readHighScore() throws IOException {
         String currLine;
-        TreeMap<String, Integer> scores = new TreeMap<>();
+        TreeMap<Integer, String> scores = new TreeMap<>();
         this.br = new BufferedReader(new FileReader(highScoreFile));
 
         while ((currLine = br.readLine()) != null) {
             String[] lineArr = currLine.split(",");
-            scores.put(lineArr[0], Integer.parseInt(lineArr[1]));
+            scores.put(Integer.parseInt(lineArr[0]), lineArr[1]);
         }
         return scores;
     }

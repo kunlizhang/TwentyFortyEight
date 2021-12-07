@@ -70,7 +70,7 @@ public class RunTwentyFortyEight implements Runnable {
         final JButton scores = new JButton("Scores");
         scores.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                board.getSavedScores();
             }
         });
         control_panel.add(scores);

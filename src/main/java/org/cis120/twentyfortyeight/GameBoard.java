@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public class GameBoard extends JPanel {
@@ -120,7 +122,8 @@ public class GameBoard extends JPanel {
         String nick;
         nick = JOptionPane.showInputDialog(null, "You win! Honestly that's kinda nerdy?!? \n" +
                 "Your score was " + g.getScore() +
-                "\n Enter your name if you would like to save your score!"
+                "\n Enter your name if you would like to save your score!",
+                "All hail the nerd!", JOptionPane.PLAIN_MESSAGE
                 );
         saveScore(nick);
     }
@@ -133,7 +136,8 @@ public class GameBoard extends JPanel {
         nick = JOptionPane.showInputDialog(null,
                 "You lost... I'm not made, just disappointed. :( \n" +
                 "Your score was " + g.getScore() +
-                "\n Enter your name if you would like to save your score you embarrassment."
+                "\n Enter your name if you would like to save your score you embarrassment.",
+                "Ur a loser xd", JOptionPane.PLAIN_MESSAGE
         );
         saveScore(nick);
     }
@@ -147,14 +151,15 @@ public class GameBoard extends JPanel {
     public void saveScore(String nick) {
         if (nick != null && !nick.equals("")) {
             try {
-                TreeMap<String, Integer> currScores = g.readHighScore();
-                int i = 1;
-                while (currScores.containsKey(nick)) {
-                    nick = nick + i;
+                Integer tempScore = g.getScore();
+                TreeMap<Integer, String> currScores = g.readHighScore();
+                while (currScores.containsKey(tempScore)) {
+                    tempScore -= 1;
                 }
-                g.saveHighScore(nick, true);
+                g.saveHighScore(nick, tempScore, true);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Lol it didn't save and idk why");
+                JOptionPane.showMessageDialog(null,
+                        "Lol it didn't save and idk why", "A warning!", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -168,10 +173,10 @@ public class GameBoard extends JPanel {
             g.readSaveFile();
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null, "Bruh you haven't saved a game yet. \n" +
-                    "The program nearly crashed cos of you...");
+                    "The program nearly crashed cos of you...", "A warning!", JOptionPane.WARNING_MESSAGE);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Bruh your save file is f***ed... \n" +
-                    "The program nearly crashed cos of you...");
+                    "The program nearly crashed cos of you...", "A warning!", JOptionPane.ERROR_MESSAGE);
         }
         repaint();
         requestFocusInWindow();
@@ -185,10 +190,40 @@ public class GameBoard extends JPanel {
             g.writeSaveFile();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Hmm. Something went wrong. \n" +
-                    "The program nearly crashed cos of you...");
+                    "The program nearly crashed cos of you...", "A warning!", JOptionPane.ERROR_MESSAGE);
         }
         repaint();
         requestFocusInWindow();
+    }
+
+    /**
+     * Displays a popup message dialog with the 5 highest scores (or less
+     * if there are less than 5 scores saved).
+     */
+    public void getSavedScores() {
+        String s = "";
+        try {
+            TreeMap<Integer, String> scores = g.readHighScore();
+            for (int i = 1; i <= 5; i++) {
+                Map.Entry<Integer, String> currScoreEntry = scores.pollLastEntry();
+                if (currScoreEntry == null) {
+                    break;
+                } else {
+                    s += i + ": " + currScoreEntry.getKey() + " - " + currScoreEntry.getValue();
+                    s += "\n";
+                }
+            }
+
+            JOptionPane.showMessageDialog(null, s,
+                    "Leaderboard", JOptionPane.PLAIN_MESSAGE);
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Hmm. Something went wrong. \n" +
+                    "The program nearly crashed cos of you...", "A warning!", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            requestFocusInWindow();
+        }
     }
 
     /**
