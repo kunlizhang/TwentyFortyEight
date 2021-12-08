@@ -3,7 +3,6 @@ package org.cis120.twentyfortyeight;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 public class TileTest {
 
     @Test

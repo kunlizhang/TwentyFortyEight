@@ -73,6 +73,7 @@ public class TwentyFortyEight {
 
     /**
      * Gets the GameBoard Tile array, and prevents aliasing.
+     * 
      * @return The GameBoard Tile[][] array
      */
     public Tile[][] getGb() {
@@ -82,6 +83,7 @@ public class TwentyFortyEight {
     /**
      * Returns a deep copy of the list of game boards stored.
      * For testing purposes.
+     * 
      * @return Linked list of game boards.
      */
     public LinkedList<Tile[][]> getGbList() {
@@ -94,8 +96,9 @@ public class TwentyFortyEight {
 
     /**
      * Creates a deep copy of the given Tile[][] array: must be 4x4.
-     * @param ogb   The input array.
-     * @return      A deep copy of the input array.
+     * 
+     * @param ogb The input array.
+     * @return A deep copy of the input array.
      */
     public Tile[][] deepCopyGb(Tile[][] ogb) {
         Tile[][] temp = new Tile[4][4];
@@ -129,6 +132,7 @@ public class TwentyFortyEight {
 
     /**
      * Returns the score of the board.
+     * 
      * @return int value of the score.
      */
     public int getScore() {
@@ -141,7 +145,8 @@ public class TwentyFortyEight {
 
     /**
      * Returns the score list history. This is provided for testing.
-     * @return  LinkedList of the score history.
+     * 
+     * @return LinkedList of the score history.
      */
     public LinkedList<Integer> getScoreList() {
         LinkedList<Integer> temp = new LinkedList<>();
@@ -154,6 +159,7 @@ public class TwentyFortyEight {
     /**
      * For one Tile, shifts it as far horizontally as possible in the
      * game board.
+     * 
      * @param r The row of the tile to be shifted
      * @param c The column of the tile
      * @param d The direction (1 for right, -1 for left)
@@ -181,6 +187,7 @@ public class TwentyFortyEight {
     /**
      * For one Tile, shifts it as far vertically as possible in the
      * game board.
+     * 
      * @param r The row of the tile to be shifted
      * @param c The column of the tile to be shifted.
      * @param d The direction (1 for down, -1 for up).
@@ -208,6 +215,7 @@ public class TwentyFortyEight {
     /**
      * Shifts the entire board left by calling onto horizontal shift. Does not
      * combine tiles that have already been combined.
+     * 
      * @param spawn Boolean, whether to spawn new tiles,
      *              false is provided for testing purposes.
      */
@@ -238,6 +246,7 @@ public class TwentyFortyEight {
     /**
      * Shifts the entire board right by calling onto horizontal shift. Does not
      * combine tiles that have already been combined.
+     * 
      * @param spawn Boolean, whether to spawn new tile. False is used
      *              for testing purposes.
      */
@@ -267,6 +276,7 @@ public class TwentyFortyEight {
 
     /**
      * Shifts the entire board up.
+     * 
      * @param spawn Boolean, whether to spawn new tiles, false is used
      *              for testing purposes.
      */
@@ -296,6 +306,7 @@ public class TwentyFortyEight {
 
     /**
      * Shifts the entire board down.
+     * 
      * @param spawn Boolean, whether to spawn new tiles, false is used
      *              for testing purposes.
      */
@@ -325,9 +336,10 @@ public class TwentyFortyEight {
 
     /**
      * Checks if a given tile is empty.
+     * 
      * @param i Row of the tile
      * @param j Col of the tile
-     * @return  Boolean, true if it is empty
+     * @return Boolean, true if it is empty
      */
     public boolean tileIsEmpty(int i, int j) {
         return this.gb[i][j].isEmpty();
@@ -335,9 +347,10 @@ public class TwentyFortyEight {
 
     /**
      * Finds the value of a given cell.
+     * 
      * @param i Row of the tile
      * @param j Col of the tile
-     * @return  The integer value of the tile.
+     * @return The integer value of the tile.
      */
     public int tileValue(int i, int j) {
         return this.gb[i][j].getValue();
@@ -356,6 +369,7 @@ public class TwentyFortyEight {
 
     /**
      * Checks whether it is possible to spawn a new tile on the board.
+     * 
      * @return True if it is possible to spawn a new tile.
      */
     public boolean canSpawn() {
@@ -381,6 +395,7 @@ public class TwentyFortyEight {
 
     /**
      * Checks if the board contains an empty tile.
+     * 
      * @return true if there is empty tile.
      */
     public boolean containsEmpty() {
@@ -389,8 +404,9 @@ public class TwentyFortyEight {
 
     /**
      * Checks if the board contains a tile of a specific value.
+     * 
      * @param v The value that we want to check if it is present.
-     * @return  True if there is a tile of that value.
+     * @return True if there is a tile of that value.
      */
     public boolean containsValue(int v) {
         for (int i = 0; i < 4; i++) {
@@ -405,6 +421,7 @@ public class TwentyFortyEight {
 
     /**
      * Checks if it is possible to make a valid move at that point.
+     * 
      * @return True if it is not possible to make a move (game over).
      */
     public boolean isGameOver() {
@@ -423,9 +440,10 @@ public class TwentyFortyEight {
 
     /**
      * Checks if it is possible for a tile to combine in the current board state.
+     * 
      * @param i The row of the tile
      * @param j The col of the tile
-     * @return  True if the tile can combine with one of its adjacent tiles.
+     * @return True if the tile can combine with one of its adjacent tiles.
      */
     public boolean couldCombine(int i, int j) {
         boolean b1 = false;
@@ -449,6 +467,7 @@ public class TwentyFortyEight {
 
     /**
      * Reads the save file and sets the current board state to that state.
+     * 
      * @throws FileNotFoundException If there is no file at the given path.
      * @throws IOException           If the file formatting is incorrect.
      */
@@ -456,17 +475,24 @@ public class TwentyFortyEight {
         String currLine;
         this.br = new BufferedReader(new FileReader(saveFile));
         LinkedList<Tile[][]> tempState = new LinkedList<>();
+        String[] lineArr;
 
-        currLine = br.readLine();
         try {
+            currLine = br.readLine();
+            lineArr = currLine.split(",");
             this.scoreList = new LinkedList<>();
-            this.scoreList.add(Integer.parseInt(currLine.trim()));
+            for (String s : lineArr) {
+                if (!s.equals("")) {
+                    this.scoreList.add(Integer.parseInt(s.trim()));
+                }
+            }
         } catch (Exception e) {
             throw new IOException();
         }
 
+
         while ((currLine = br.readLine()) != null) {
-            String[] lineArr = currLine.split(",");
+            lineArr = currLine.split(",");
 
             Tile[][] currTiles = new Tile[4][4];
 
@@ -493,13 +519,17 @@ public class TwentyFortyEight {
      *
      * The first line is current score.
      *
-     * @throws IOException If the buffered writer is unable to complete the execution.
+     * @throws IOException If the buffered writer is unable to complete the
+     *                     execution.
      */
     public void writeSaveFile() throws IOException {
         File file = Paths.get(saveFile).toFile();
         this.bw = new BufferedWriter(new FileWriter(file, false));
 
-        bw.write(String.valueOf(this.getScore()));
+        for (Integer score : this.scoreList) {
+            bw.write(score + ",");
+        }
+
         bw.write("\n");
         for (Tile[][] t : this.gbList) {
             for (int i = 0; i < 4; i++) {
@@ -514,9 +544,10 @@ public class TwentyFortyEight {
 
     /**
      * Saves a high score with an associated nickname.
-     * @param nickname      The nickname of the saver.
-     * @param score         The score to be saved
-     * @param append        Whether to append to the save document: for testing.
+     * 
+     * @param nickname The nickname of the saver.
+     * @param score    The score to be saved
+     * @param append   Whether to append to the save document: for testing.
      * @throws IOException
      */
     public void saveHighScore(String nickname, Integer score, boolean append) throws IOException {
@@ -531,7 +562,8 @@ public class TwentyFortyEight {
     /**
      * Reads the high score file. If one score already contains a player,
      * it only returns the most recent player who attained that score.
-     * @return  A TreeMap with nicknames as keys and the score as values.
+     * 
+     * @return A TreeMap with nicknames as keys and the score as values.
      * @throws IOException
      */
     public TreeMap<Integer, String> readHighScore() throws IOException {
@@ -548,6 +580,7 @@ public class TwentyFortyEight {
 
     /**
      * Returns a string representation of the game board.
+     * 
      * @return String representing board.
      */
     @Override
@@ -562,7 +595,6 @@ public class TwentyFortyEight {
         return s;
     }
 
-
     public static void main(String[] args) {
         TwentyFortyEight g = new TwentyFortyEight();
         System.out.println(g);
@@ -576,4 +608,3 @@ public class TwentyFortyEight {
         System.out.println(g);
     }
 }
-

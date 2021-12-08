@@ -65,7 +65,7 @@ public class GameTest {
     public void testHorizontalShiftEmpty() {
         TwentyFortyEight g = new TwentyFortyEight();
         Integer[] valuesArr = {
-                2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         };
         g.setGB(valuesArr);
         g.horizontalShift(0, 0, 1);
@@ -93,7 +93,7 @@ public class GameTest {
     public void testVerticalShiftEmpty() {
         TwentyFortyEight g = new TwentyFortyEight();
         Integer[] valuesArr = {
-                2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         };
         g.setGB(valuesArr);
         g.verticalShift(0, 0, 1);
@@ -121,7 +121,7 @@ public class GameTest {
     public void testHorizontalShiftNonEmpty() {
         TwentyFortyEight g = new TwentyFortyEight();
         Integer[] valuesArr = {
-                2, 2, 0, 0, 0, 2, 0, 2, 2, 4, 0, 0, 0, 0, 0, 0
+            2, 2, 0, 0, 0, 2, 0, 2, 2, 4, 0, 0, 0, 0, 0, 0
         };
         g.setGB(valuesArr);
 
@@ -181,10 +181,10 @@ public class GameTest {
     public void testUp() {
         TwentyFortyEight g = new TwentyFortyEight();
         Integer[] valuesArr = {
-                0, 4, 8, 0,
-                0, 0, 8, 0,
-                0, 4, 4, 2,
-                2, 0, 4, 2,
+            0, 4, 8, 0,
+            0, 0, 8, 0,
+            0, 4, 4, 2,
+            2, 0, 4, 2,
         };
 
         g.setGB(valuesArr);
@@ -217,10 +217,10 @@ public class GameTest {
     public void testDown() {
         TwentyFortyEight g = new TwentyFortyEight();
         Integer[] valuesArr = {
-                0, 4, 8, 32,
-                0, 0, 8, 0,
-                0, 4, 4, 2,
-                2, 8, 4, 2,
+            0, 4, 8, 32,
+            0, 0, 8, 0,
+            0, 4, 4, 2,
+            2, 8, 4, 2,
         };
 
         g.setGB(valuesArr);
@@ -253,10 +253,10 @@ public class GameTest {
     public void testRight() {
         TwentyFortyEight g = new TwentyFortyEight();
         Integer[] valuesArr = {
-                32, 32, 0, 8,
-                8, 8, 2, 2,
-                4, 4, 4, 4,
-                2, 2, 0, 0
+            32, 32, 0, 8,
+            8, 8, 2, 2,
+            4, 4, 4, 4,
+            2, 2, 0, 0
         };
 
         g.setGB(valuesArr);
@@ -289,10 +289,10 @@ public class GameTest {
     public void testLeft() {
         TwentyFortyEight g = new TwentyFortyEight();
         Integer[] valuesArr = {
-                32, 32, 0, 8,
-                8, 8, 2, 2,
-                4, 4, 4, 4,
-                2, 2, 0, 0
+            32, 32, 0, 8,
+            8, 8, 2, 2,
+            4, 4, 4, 4,
+            2, 2, 0, 0
         };
 
         g.setGB(valuesArr);
@@ -325,10 +325,10 @@ public class GameTest {
         TwentyFortyEight g = new TwentyFortyEight();
         // Initially empty
         Integer[] valuesArr = {
-                32, 32, 0, 8,
-                8, 8, 2, 2,
-                4, 4, 4, 4,
-                2, 2, 0, 0
+            32, 32, 0, 8,
+            8, 8, 2, 2,
+            4, 4, 4, 4,
+            2, 2, 0, 0
         };
 
         g.setGB(valuesArr);
@@ -337,10 +337,10 @@ public class GameTest {
 
         // Not empty after move.
         Integer[] valuesArr1 = {
-                64, 32, 4, 8,
-                128, 32, 2, 4,
-                16, 8, 4, 2,
-                32, 2, 4, 8
+            64, 32, 4, 8,
+            128, 32, 2, 4,
+            16, 8, 4, 2,
+            32, 2, 4, 8
         };
 
         g.setGB(valuesArr1);
@@ -349,10 +349,10 @@ public class GameTest {
 
         // Not empty before but empty after.
         Integer[] valuesArr2 = {
-                64, 32, 4, 8,
-                128, 32, 2, 4,
-                16, 8, 4, 2,
-                32, 2, 4, 8
+            64, 32, 4, 8,
+            128, 32, 2, 4,
+            16, 8, 4, 2,
+            32, 2, 4, 8
         };
 
         g.setGB(valuesArr2);
@@ -365,10 +365,10 @@ public class GameTest {
         TwentyFortyEight g = new TwentyFortyEight();
         // Nothing happens after undo
         Integer[] valuesArr = {
-                64, 32, 4, 8,
-                128, 32, 2, 4,
-                16, 8, 4, 2,
-                32, 2, 4, 8
+            64, 32, 4, 8,
+            128, 32, 2, 4,
+            16, 8, 4, 2,
+            32, 2, 4, 8
         };
 
         g.setGB(valuesArr);
@@ -399,10 +399,10 @@ public class GameTest {
         assertEquals(8, currBoard[3][3].getValue());
 
         Integer[] valuesArr1 = {
-                64, 32, 4, 4,
-                128, 32, 2, 4,
-                16, 8, 4, 2,
-                32, 2, 4, 8
+            64, 32, 4, 4,
+            128, 32, 2, 4,
+            16, 8, 4, 2,
+            32, 2, 4, 8
         };
 
         g.setGB(valuesArr1);
@@ -471,10 +471,10 @@ public class GameTest {
         TwentyFortyEight g = new TwentyFortyEight();
 
         Integer[] valuesArr = {
-                2, 2, 0, 0,
-                0, 0, 0, 0,
-                0, 0, 0, 0,
-                0, 0, 0, 0,
+            2, 2, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
         };
 
         g.setGB(valuesArr);
@@ -500,10 +500,10 @@ public class GameTest {
         }
 
         Integer[] valuesArr1 = {
-                2, 4, 8, 16,
-                0, 0, 0, 0,
-                0, 0, 0, 0,
-                0, 0, 0, 0,
+            2, 4, 8, 16,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
         };
 
         g.setGB(valuesArr1);
@@ -529,10 +529,10 @@ public class GameTest {
         }
 
         Integer[] valuesArr2 = {
-                2, 2, 8, 16,
-                2, 4, 8, 32,
-                8, 16, 32, 64,
-                128, 256, 512, 2,
+            2, 2, 8, 16,
+            2, 4, 8, 32,
+            8, 16, 32, 64,
+            128, 256, 512, 2,
         };
 
         g.setGB(valuesArr2);
@@ -553,8 +553,6 @@ public class GameTest {
             }
         }
 
-
-
     }
 
     @Test
@@ -562,10 +560,10 @@ public class GameTest {
         TwentyFortyEight g = new TwentyFortyEight();
 
         Integer[] valuesArr = {
-                2, 2, 4, 0,
-                4, 4, 8, 0,
-                2, 2, 0, 0,
-                32, 32, 64, 0,
+            2, 2, 4, 0,
+            4, 4, 8, 0,
+            2, 2, 0, 0,
+            32, 32, 64, 0,
         };
 
         g.setGB(valuesArr);
@@ -584,10 +582,10 @@ public class GameTest {
 
         // Game over
         Integer[] valuesArr = {
-                2, 4, 2, 8,
-                4, 8, 4, 2,
-                16, 4, 8, 32,
-                256, 8, 16, 64,
+            2, 4, 2, 8,
+            4, 8, 4, 2,
+            16, 4, 8, 32,
+            256, 8, 16, 64,
         };
 
         g.setGB(valuesArr);
@@ -595,10 +593,10 @@ public class GameTest {
 
         // Contains empty not game over.
         Integer[] valuesArr1 = {
-                2, 4, 2, 0,
-                4, 8, 4, 2,
-                16, 4, 8, 32,
-                256, 8, 16, 64,
+            2, 4, 2, 0,
+            4, 8, 4, 2,
+            16, 4, 8, 32,
+            256, 8, 16, 64,
         };
 
         g.setGB(valuesArr1);
@@ -606,10 +604,10 @@ public class GameTest {
 
         // Non-empty not game over.
         Integer[] valuesArr2 = {
-                2, 4, 2, 2,
-                4, 8, 4, 2,
-                16, 4, 8, 32,
-                256, 8, 16, 64,
+            2, 4, 2, 2,
+            4, 8, 4, 2,
+            16, 4, 8, 32,
+            256, 8, 16, 64,
         };
 
         g.setGB(valuesArr2);
@@ -625,17 +623,17 @@ public class GameTest {
         TwentyFortyEight g = new TwentyFortyEight();
 
         Integer[] valuesArr = {
-                2, 2, 0, 0,
-                2, 4, 8, 16,
-                0, 0, 0, 0,
-                8, 8, 2, 0,
+            2, 2, 0, 0,
+            2, 4, 8, 16,
+            0, 0, 0, 0,
+            8, 8, 2, 0,
         };
 
         Integer[] postMoveArr = {
-                4, 0, 0, 0,
-                2, 4, 8, 16,
-                0, 0, 0, 0,
-                16, 2, 0, 0,
+            4, 0, 0, 0,
+            2, 4, 8, 16,
+            0, 0, 0, 0,
+            16, 2, 0, 0,
         };
 
         g.setGB(valuesArr);
@@ -650,7 +648,8 @@ public class GameTest {
         String saveFile = "files/save.txt";
         BufferedReader br = new BufferedReader(new FileReader(saveFile));
 
-        assertEquals(20,
+        assertEquals(
+                20,
                 Integer.parseInt(br.readLine().split(",")[0])
         );
 
@@ -667,10 +666,10 @@ public class GameTest {
         TwentyFortyEight g = new TwentyFortyEight();
 
         Integer[] valuesArr = {
-                2, 2, 0, 0,
-                2, 4, 8, 16,
-                0, 0, 0, 0,
-                8, 8, 2, 0,
+            2, 2, 0, 0,
+            2, 4, 8, 16,
+            0, 0, 0, 0,
+            8, 8, 2, 0,
         };
 
         g.setGB(valuesArr);
@@ -685,7 +684,8 @@ public class GameTest {
         String saveFile = "files/save.txt";
         BufferedReader br = new BufferedReader(new FileReader(saveFile));
 
-        assertEquals(0,
+        assertEquals(
+                "",
                 Integer.parseInt(br.readLine().split(",")[0])
         );
 
@@ -700,10 +700,10 @@ public class GameTest {
         TwentyFortyEight g = new TwentyFortyEight();
 
         Integer[] valuesArr = {
-                2, 2, 0, 0,
-                2, 4, 8, 16,
-                0, 0, 0, 0,
-                8, 8, 2, 0,
+            2, 2, 0, 0,
+            2, 4, 8, 16,
+            0, 0, 0, 0,
+            8, 8, 2, 0,
         };
 
         g.setGB(valuesArr);
@@ -713,17 +713,17 @@ public class GameTest {
         g.up();
         g.left();
 
-        assertNotEquals(1, g.getScoreList().size());
-        assertNotEquals(1, g.getGbList().size());
+        assertNotEquals(0, g.getScoreList().size());
+        assertNotEquals(0, g.getGbList().size());
 
         g.readSaveFile();
 
-        assertEquals(1, g.getScoreList().size());
+        assertEquals(0, g.getScoreList().size());
         assertEquals(0, g.getScore());
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                assertEquals(valuesArr[4*i + j], g.getGb()[i][j].getValue());
+                assertEquals(valuesArr[4 * i + j], g.getGb()[i][j].getValue());
             }
         }
     }
@@ -751,10 +751,10 @@ public class GameTest {
         TwentyFortyEight g = new TwentyFortyEight();
 
         Integer[] valuesArr = {
-                2, 2, 0, 0,
-                2, 4, 8, 16,
-                0, 0, 0, 0,
-                8, 8, 2, 0,
+            2, 2, 0, 0,
+            2, 4, 8, 16,
+            0, 0, 0, 0,
+            8, 8, 2, 0,
         };
 
         g.setGB(valuesArr);
@@ -806,10 +806,52 @@ public class GameTest {
     }
 
     @Test
+    public void testUndoAfterOpenSave() throws IOException {
+        TwentyFortyEight g = new TwentyFortyEight();
+
+        g.up();
+        g.right();
+        g.down();
+        g.left();
+
+        LinkedList<Tile[][]> prevMoves = g.getGbList();
+        LinkedList<Integer> prevScores = g.getScoreList();
+
+        g.writeSaveFile();
+
+        g.newGame();
+        g.up();
+        g.right();
+        g.down();
+        g.left();
+
+        g.readSaveFile();
+        Integer l = prevMoves.size();
+
+        for (int k = 0; k < l; k++) {
+            Tile[][] oldBoard = prevMoves.pollLast();
+            Integer prevScore = prevScores.pollLast();
+
+            if (prevScore == null && k == l - 1) {
+                prevScore = 0;
+            }
+
+            assertEquals(prevScore, g.getScore());
+            for (int i = 0; i < 4; i ++) {
+                for (int j = 0; j < 4; j++) {
+                    assertEquals(oldBoard[i][j].getValue(), g.getGb()[i][j].getValue());
+                }
+            }
+            g.undo();
+        }
+
+    }
+
+    @Test
     public void testScoringSingle() {
         TwentyFortyEight g = new TwentyFortyEight();
         Integer[] valuesArr = {
-                2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+            2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         };
         g.setGB(valuesArr);
         assertEquals(0, g.getScore());

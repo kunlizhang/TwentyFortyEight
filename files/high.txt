@@ -1,5 +1,4 @@
 20000,Kunli
 10000,Will
 20000,Vincent
-19716,KunlI!
-18100,Ryan Real
+19712,Kunli Zhang

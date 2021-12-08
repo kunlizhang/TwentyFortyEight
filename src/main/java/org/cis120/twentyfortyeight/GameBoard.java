@@ -1,4 +1,5 @@
 package org.cis120.twentyfortyeight;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -9,13 +10,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public class GameBoard extends JPanel {
 
     private TwentyFortyEight g; // model for the game
-    private JLabel score; //Label for the score
+    private JLabel score; // Label for the score
     public static final String IMG_FILE = "files/drawTile.png";
     private BufferedImage img;
     private TreeMap<Integer, BufferedImage> imgMap;
@@ -61,7 +61,6 @@ public class GameBoard extends JPanel {
         imgMap.put(512, img.getSubimage(163, 316, 90, 90));
         imgMap.put(1024, img.getSubimage(268, 316, 90, 90));
         imgMap.put(2048, img.getSubimage(374, 316, 90, 90));
-
 
         /*
          * Listens for key clicks. Updates the model, then updates the game
@@ -120,11 +119,12 @@ public class GameBoard extends JPanel {
      */
     public void gameWon() {
         String nick;
-        nick = JOptionPane.showInputDialog(null, "You win! Honestly that's kinda nerdy?!? \n" +
-                "Your score was " + g.getScore() +
-                "\n Enter your name if you would like to save your score!",
+        nick = JOptionPane.showInputDialog(
+                null, "You win! Honestly that's kinda nerdy?!? \n" +
+                        "Your score was " + g.getScore() +
+                        "\n Enter your name if you would like to save your score!",
                 "All hail the nerd!", JOptionPane.PLAIN_MESSAGE
-                );
+        );
         saveScore(nick);
     }
 
@@ -133,10 +133,11 @@ public class GameBoard extends JPanel {
      */
     public void gameOver() {
         String nick;
-        nick = JOptionPane.showInputDialog(null,
+        nick = JOptionPane.showInputDialog(
+                null,
                 "You lost... I'm not made, just disappointed. :( \n" +
-                "Your score was " + g.getScore() +
-                "\n Enter your name if you would like to save your score you embarrassment.",
+                        "Your score was " + g.getScore() +
+                        "\n Enter your name if you would like to save your score you embarrassment",
                 "Ur a loser xd", JOptionPane.PLAIN_MESSAGE
         );
         saveScore(nick);
@@ -146,7 +147,8 @@ public class GameBoard extends JPanel {
      * Saves the current high score with the associated nickname by writing to
      * the high score file. If the nickname already has an associated score
      * it adds a number to the end of the nickname.
-     * @param nick  The name to be associated with the score.
+     * 
+     * @param nick The name to be associated with the score.
      */
     public void saveScore(String nick) {
         if (nick != null && !nick.equals("")) {
@@ -158,8 +160,10 @@ public class GameBoard extends JPanel {
                 }
                 g.saveHighScore(nick, tempScore, true);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(null,
-                        "Lol it didn't save and idk why", "A warning!", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Lol it didn't save and idk why", "A warning!", JOptionPane.ERROR_MESSAGE
+                );
             }
         }
     }
@@ -172,11 +176,17 @@ public class GameBoard extends JPanel {
         try {
             g.readSaveFile();
         } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Bruh you haven't saved a game yet. \n" +
-                    "The program nearly crashed cos of you...", "A warning!", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    null, "Bruh you haven't saved a game yet. \n" +
+                            "The program nearly crashed cos of you...",
+                    "A warning!", JOptionPane.WARNING_MESSAGE
+            );
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Bruh your save file is f***ed... \n" +
-                    "The program nearly crashed cos of you...", "A warning!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    null, "Bruh your save file is f***ed... \n" +
+                            "The program nearly crashed cos of you...",
+                    "A warning!", JOptionPane.ERROR_MESSAGE
+            );
         }
         repaint();
         requestFocusInWindow();
@@ -189,8 +199,11 @@ public class GameBoard extends JPanel {
         try {
             g.writeSaveFile();
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Hmm. Something went wrong. \n" +
-                    "The program nearly crashed cos of you...", "A warning!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    null, "Hmm. Something went wrong. \n" +
+                            "The program nearly crashed cos of you...",
+                    "A warning!", JOptionPane.ERROR_MESSAGE
+            );
         }
         repaint();
         requestFocusInWindow();
@@ -214,13 +227,18 @@ public class GameBoard extends JPanel {
                 }
             }
 
-            JOptionPane.showMessageDialog(null, s,
-                    "Leaderboard", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    null, s,
+                    "Leaderboard", JOptionPane.PLAIN_MESSAGE
+            );
 
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,
+            JOptionPane.showMessageDialog(
+                    null,
                     "Hmm. Something went wrong. \n" +
-                    "The program nearly crashed cos of you...", "A warning!", JOptionPane.ERROR_MESSAGE);
+                            "The program nearly crashed cos of you...",
+                    "A warning!", JOptionPane.ERROR_MESSAGE
+            );
         } finally {
             requestFocusInWindow();
         }
@@ -236,7 +254,7 @@ public class GameBoard extends JPanel {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if (!this.g.tileIsEmpty(i, j)) {
-                    g.drawImage(imgMap.get(this.g.tileValue(i, j)), j*90, i*90, null);
+                    g.drawImage(imgMap.get(this.g.tileValue(i, j)), j * 90, i * 90, null);
                 } else {
                     g.setColor(Color.WHITE);
                     g.fillRect(j * 90, i * 90, 90, 90);
