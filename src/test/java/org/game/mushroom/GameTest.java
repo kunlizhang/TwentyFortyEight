@@ -1,4 +1,4 @@
-package org.cis120.mushroom;
+package org.game.mushroom;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;

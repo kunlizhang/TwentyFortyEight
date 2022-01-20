@@ -1,4 +1,4 @@
-package org.cis120.twentyfortyeight;
+package org.game.twentyfortyeight;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -100,6 +100,12 @@ public class GameBoard extends JPanel {
         repaint();
         this.score.setText("Current score: " + Integer.toString(g.getScore()));
 
+        JOptionPane.showMessageDialog(null,
+                "Press the arrow keys to move the board. \n" +
+                        "You may undo, save the game, and view the top scorers. \n" +
+                        "Open save opens the current saved game. Have fun!",
+                "A message for those who aren't cool", JOptionPane.PLAIN_MESSAGE
+        );
         // Makes sure this component has keyboard/mouse focus
         requestFocusInWindow();
     }

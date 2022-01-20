@@ -1,4 +1,4 @@
-package org.cis120.twentyfortyeight;
+package org.game.twentyfortyeight;
 
 import javax.swing.*;
 import java.util.Arrays;

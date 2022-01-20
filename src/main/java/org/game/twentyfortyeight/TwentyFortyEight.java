@@ -1,6 +1,5 @@
-package org.cis120.twentyfortyeight;
+package org.game.twentyfortyeight;
 
-import javax.swing.*;
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.LinkedList;

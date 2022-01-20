@@ -1,4 +1,4 @@
-package org.cis120.twentyfortyeight;
+package org.game.twentyfortyeight;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -6,7 +6,6 @@ import javax.swing.*;
 
 /**
  * This class sets up the top-level frame and widgets for the GUI.
- *
  */
 public class RunTwentyFortyEight implements Runnable {
     public void run() {

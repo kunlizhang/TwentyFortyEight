@@ -1,4 +1,4 @@
-package org.cis120.twentyfortyeight;
+package org.game.twentyfortyeight;
 
 import org.junit.jupiter.api.*;
 

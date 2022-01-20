@@ -1,4 +1,4 @@
-package org.cis120.tictactoe;
+package org.game.tictactoe;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;

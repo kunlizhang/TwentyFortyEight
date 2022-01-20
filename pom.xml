@@ -35,7 +35,7 @@
           <artifactId>exec-maven-plugin</artifactId>
           <version>1.4.0</version>
           <configuration>
-            <mainClass>org.cis120.Game</mainClass>
+            <mainClass>org.game.Game</mainClass>
           </configuration>
         </plugin>
 
@@ -44,7 +44,7 @@
           <configuration>
             <archive>
               <manifest>
-                <mainClass>org.cis120.Game</mainClass>
+                <mainClass>org.game.Game</mainClass>
               </manifest>
             </archive>
             <descriptorRefs>
